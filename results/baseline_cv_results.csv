@@ -1,5 +1,5 @@
-model,fold_1_qwk,fold_2_qwk,fold_3_qwk,fold_4_qwk,fold_5_qwk,mean_qwk,std_qwk
-DummyClassifier,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Ridge,0.3323,0.4424,0.3602,0.3469,0.3564,0.3677,0.0386
-DecisionTreeClassifier,0.183,0.2447,0.3019,0.214,0.161,0.2209,0.0494
-RandomForestClassifier,0.2944,0.3166,0.2919,0.3114,0.2461,0.2921,0.0249
+model,fold_1_qwk,fold_2_qwk,fold_3_qwk,fold_4_qwk,fold_5_qwk,mean_training_qwk,mean_validation_qwk,validation_std_qwk,oof_pred_0_count,oof_pred_1_count,oof_pred_2_count,oof_pred_3_count
+DummyClassifier,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2736,0,0,0
+Ridge,0.3323,0.4424,0.3602,0.3469,0.3564,0.4041,0.3677,0.0386,1232,1467,36,1
+DecisionTreeClassifier,0.183,0.2447,0.3019,0.214,0.161,1.0,0.2209,0.0494,1547,754,388,47
+RandomForestClassifier,0.2944,0.3166,0.2919,0.3114,0.2461,1.0,0.2921,0.0249,2148,469,119,0

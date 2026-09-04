@@ -65,7 +65,9 @@ def evaluate_model(
     prediction_transform=None,
 ):
     """Evaluate a model on fixed cross-validation splits"""
-    fold_scores = []
+    training_scores = []
+    validation_scores = []
+    oof_predictions = np.empty(len(y), dtype=int)
 
     for fold_number, (train_indices, validation_indices) in enumerate(
         cv_splits,
@@ -80,18 +82,42 @@ def evaluate_model(
         y_validation = y.iloc[validation_indices]
 
         fold_model.fit(X_train, y_train)
-        predictions = fold_model.predict(X_validation)
+        training_predictions = fold_model.predict(X_train)
+        validation_predictions = fold_model.predict(X_validation)
 
         # Convert continuous regression outputs before calculating QWK
         if prediction_transform is not None:
-            predictions = prediction_transform(predictions)
+            training_predictions = prediction_transform(training_predictions)
+            validation_predictions = prediction_transform(validation_predictions)
 
-        score = quadratic_weighted_kappa(y_validation, predictions)
-        fold_scores.append(score)
+        training_score = quadratic_weighted_kappa(
+            y_train,
+            training_predictions,
+        )
+        validation_score = quadratic_weighted_kappa(
+            y_validation,
+            validation_predictions,
+        )
 
-        print(f"Fold {fold_number} QWK: {score:.4f}")
+        training_scores.append(training_score)
+        validation_scores.append(validation_score)
+        oof_predictions[validation_indices] = validation_predictions
 
-    print(f"Mean QWK: {np.mean(fold_scores):.4f}")
-    print(f"QWK standard deviation: {np.std(fold_scores):.4f}")
+        print(
+            f"Fold {fold_number}: "
+            f"training QWK={training_score:.4f}, "
+            f"validation QWK={validation_score:.4f}"
+        )
 
-    return fold_scores
+    print(f"Mean training QWK: {np.mean(training_scores):.4f}")
+    print(f"Mean validation QWK: {np.mean(validation_scores):.4f}")
+    print(
+        "Validation QWK standard deviation: "
+        f"{np.std(validation_scores):.4f}"
+    )
+
+    return {
+        "training_scores": training_scores,
+        "validation_scores": validation_scores,
+        "oof_predictions": oof_predictions,
+    }
