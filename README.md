@@ -56,11 +56,21 @@ and missingness is **block-structured** (a whole assessment is present or absent
 together):
 
 - **Layer A `src/features.py` (`build_features`).** Deterministic, row-local
-  transforms that never read statistics from other rows: drop the `PCIAT-*`
-  leakage columns, merge the age-gated `PAQ_C`/`PAQ_A` into one `PAQ_total`
-  (+ `PAQ_version`, `PAQ_missing`, `PAQ_season`), and add one
-  `<instrument>_not_administered` flag per assessment block. Contains NaN in
-  some gaps **by design**.
+  transforms that never read statistics from other rows. It validates the
+  data and engineers features:
+    - codebook check: values outside the data dictionary's allowed set → NaN;
+    - domain-range check: physiologically impossible values -> NaN (`Weight`/`BMI`/`BP` = 0 entries and the `CGAS` = 999 sentinel);
+    - BMI cross-consistency: compares `Physical-BMI` against BMI
+      recomputed from height/weight, flags (`bmi_inconsistent`) and nulls gross
+      mismatches;
+    - drop the `PCIAT-*` leakage columns, merge the age-gated `PAQ_C`/`PAQ_A`
+      into `PAQ_total` (+ `PAQ_version`, `PAQ_missing`, `PAQ_season`), and
+      add `<instrument>_not_administered` flag per assessment block.
+
+  The validation steps use fixed references (the dictionary, clinical bounds,
+  the BMI formula). The output contains NaN in some gaps by design.
+  `results/feature_types.csv` records the dictionary-driven type of every field
+  (identifier / leakage / categorical / continuous) as a contract for modeling.
 - **Layer B `src/imputation.py` (`make_preprocessor`).** Learned imputation
   (median, or iterative for the linked BIA/Physical blocks) plus scaling and
   one-hot encoding, delivered as a scikit-learn `ColumnTransformer`. It is fit
@@ -79,9 +89,10 @@ tabular gaps; they are out of scope for this stage.
 
 **Reference CV** (`results/imputation_cv_results.csv`, on the shared stratified
 folds): Ridge with Layer A + median imputation matches the raw baseline mean QWK
-(0.369) while halving fold-to-fold variance (std ~0.026 vs ~0.039);
-iterative block imputation does not beat the median on the linear model, so the
-median is the default; an untuned NaN-native `HistGradientBoosting` overfits
+(0.369) while halving fold-to-fold variance (std ~0.026 vs ~0.039). Neither
+iterative block imputation nor percentile winsorization beats plain median on
+the linear model, so median is the default and both stay as options in
+`make_preprocessor`. An untuned NaN-native `HistGradientBoosting` overfits
 (train QWK ~1.0) and is left as a direction to tune.
 
 ## Setup
