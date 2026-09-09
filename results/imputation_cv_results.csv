@@ -1,0 +1,5 @@
+setup,mean_val_qwk,val_std_qwk,mean_train_qwk
+Ridge | Layer A + median,0.3698,0.028,0.3992
+Ridge | Layer A + iterative,0.3691,0.0249,0.4041
+Ridge | Layer A + median + winsor 1%,0.3699,0.031,0.4073
+"HistGBM | Layer A, native NaN (untuned)",0.3111,0.0247,0.9998
