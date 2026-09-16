@@ -35,8 +35,13 @@ notebooks/04_tabular_feature_eda.ipynb Feature EDA
 notebooks/05_instrument_analysis.ipynb Instrument-level analysis
 notebooks/06_imputation_strategy.ipynb Data-processing handoff (Layer A + imputation reference)
 notebooks/baseline.ipynb              Data audit and baseline experiments
+notebooks/07_adaboost.ipynb            AdaBoost experiments
+notebooks/07_catboost.ipynb            CatBoost ordinal regression and tuning
+notebooks/08_xgboost.ipynb             XGBoost ordinal regression and tuning
+notebooks/09_ensemble.ipynb            CatBoost/XGBoost/ExtraTrees/Ridge blend with nested calibration
 src/config.py                         Shared project settings
 src/evaluation.py                     Shared CV and QWK utilities
+src/ensemble.py                       QWK threshold search and nonnegative blending
 src/features.py                       Layer A: deterministic feature engineering
 src/imputation.py                     Layer B: fold-safe imputation components
 data/processed/                       Layer A output for modeling
@@ -141,3 +146,35 @@ The baseline excludes `id`, the target `sii`, and all `PCIAT-*` columns from mod
 Open `notebooks/baseline.ipynb`, select the `.venv` kernel, and run all cells in order
 
 All models use the same five stratified folds with shuffling and random state 42. Fold assignment is made stable by participant ID
+
+## Ordinal ensemble (notebook 09)
+
+After generating the processed features with notebook 06, run
+`notebooks/09_ensemble.ipynb` from top to bottom. It does not require executing
+notebooks 07/08: their saved best boosting parameters are frozen in notebook 09.
+It blends continuous CatBoost, XGBoost, ExtraTrees, and Ridge predictions and
+learns three QWK class thresholds. CPU usage is capped at four threads.
+
+Five outer folds with three inner folds evaluate ensemble calibration: weights
+and thresholds are learned on inner OOF predictions only, while early stopping
+uses a separate training-only holdout followed by a full-training-partition
+refit. Historical boosting hyperparameter selection still used this dataset,
+so this is not fully nested evaluation of all model selection. The notebook
+separately reports optimistic full-OOF calibration scores, like notebooks 07/08.
+Read the comparison table rather than assuming blending improves the best member.
+
+Saved run: equal averaging with nested thresholds achieved OOF QWK **0.4703**,
+versus **0.4554** for the best nested single member (XGBoost). Searching blend
+weights achieved **0.4596** in nested calibration; equal averaging was stronger.
+The deployment blend's full-OOF calibrated QWK is **0.4782**, an optimistic
+score that must not be compared directly to the nested estimates.
+
+Outputs in `results/`: `ensemble_cv_results.csv` (nested comparison),
+`ensemble_fold_results.csv`, `ensemble_exploratory_results.csv`,
+`ensemble_oof_predictions.csv`, `ensemble_metadata.json`, and
+`submission_ensemble.csv` in sample-submission ID order. Existing individual-model
+results are preserved. The public example test file is not a leaderboard evaluation.
+Per-participant OOF predictions and the submission are generated locally and
+Git-ignored; aggregate scores and configuration metadata can be versioned.
+
+Quick utility checks: `python -m unittest discover -s tests -v`.

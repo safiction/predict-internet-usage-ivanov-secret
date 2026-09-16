@@ -1,0 +1,36 @@
+setup,fold,validation_qwk
+catboost | nested thresholds,1,0.44236281478421635
+xgboost_extra | nested thresholds,1,0.4678447007098012
+extra_trees | nested thresholds,1,0.4656878632700244
+ridge | nested thresholds,1,0.43053439224660117
+equal blend | fixed thresholds,1,0.3399300051789891
+equal blend | nested thresholds,1,0.47286905488875797
+optimized blend | nested calibration,1,0.4642163928125299
+catboost | nested thresholds,2,0.5000919567548603
+xgboost_extra | nested thresholds,2,0.5061344765892863
+extra_trees | nested thresholds,2,0.4896641012318107
+ridge | nested thresholds,2,0.4983805510028877
+equal blend | fixed thresholds,2,0.430921464330413
+equal blend | nested thresholds,2,0.5330323290522431
+optimized blend | nested calibration,2,0.5061344765892863
+catboost | nested thresholds,3,0.4761085046010508
+xgboost_extra | nested thresholds,3,0.4802602142645277
+extra_trees | nested thresholds,3,0.4718694769915559
+ridge | nested thresholds,3,0.4404479655607828
+equal blend | fixed thresholds,3,0.3778739603983856
+equal blend | nested thresholds,3,0.4787836947477012
+optimized blend | nested calibration,3,0.4903142123514308
+catboost | nested thresholds,4,0.4194651962528163
+xgboost_extra | nested thresholds,4,0.41052575422123827
+extra_trees | nested thresholds,4,0.4254152073374641
+ridge | nested thresholds,4,0.4130885263804519
+equal blend | fixed thresholds,4,0.32494999787225
+equal blend | nested thresholds,4,0.4385046364527839
+optimized blend | nested calibration,4,0.41730183241533647
+catboost | nested thresholds,5,0.4188251096883584
+xgboost_extra | nested thresholds,5,0.41089953067505713
+extra_trees | nested thresholds,5,0.410650119870258
+ridge | nested thresholds,5,0.3993451394573443
+equal blend | fixed thresholds,5,0.35769509496552876
+equal blend | nested thresholds,5,0.4251436725979435
+optimized blend | nested calibration,5,0.41850652456104387

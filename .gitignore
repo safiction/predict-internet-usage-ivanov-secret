@@ -6,3 +6,5 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 catboost_info/
+results/ensemble_oof_predictions.csv
+results/submission_ensemble.csv
