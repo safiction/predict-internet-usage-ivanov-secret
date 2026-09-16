@@ -1,0 +1,18 @@
+{
+  "experiment_artifact_sha256": {
+    "nested_cv_results.csv": "2137373a21b115cf72f6d927f29ab99df3a1bc39a7bc4edc890eb26712f6d551",
+    "nested_fold_results.csv": "91541ffd99b2ab63f35f36fea2313d9fe7436c75cae83b18eaada17bdf8755c7",
+    "nested_paired_deltas.csv": "25ce2d6f0a77fee2c9aa8b107581fdb0bba92a332c27050c36af01a730099289",
+    "nested_repeat_results.csv": "8a5cb20b8a431d1e6f61362f4dc5befb2e70842b3f87e97c2212868813dcc48e",
+    "nested_class_metrics.csv": "e4a39e177b06b5c50d3c0ffac7ad994c3db78e017d55d5c534e865d1c3b7faec",
+    "nested_tuning_results.csv": "1ff16c50888fda9fab328cc07dad8eb4286194b8baf1a7154c151736fead1492"
+  },
+  "report_sha256": {
+    "docs/project.md": "6ce2c85d0a3c552797ddd1b1625e039aca75d154df8ac44a0e72a255e841d39e",
+    "src/report.py": "4b149bc6152e67301dbe77907b16af5fe6be40e6f0e83a979b1176f5c8a8330e",
+    "docs/project.rendered.md": "48380a629a9e80a163e12b1c7edd80efb708a9bf0546d48b6c898df422a556e1",
+    "project.pdf": "7f1cc312e127a5d98eeb05265f159bb3f56573517862053a311dbcf5e3bacf86",
+    "results/figures/nested_qwk.png": "f023b0f0e7857daa56022445d1b265cce918799b135025f8ea82f429aa5c69de",
+    "results/figures/nested_confusion.png": "3b4f7d024095e5417a81f2621c80f3a61ad8bcb4204752bedecb2babba6cc683"
+  }
+}

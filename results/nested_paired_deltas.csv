@@ -1,0 +1,4 @@
+primary,reference,delta_qwk,ci_low,ci_high,interval_excludes_zero
+Tuned equal ensemble,Inner-selected single model,0.009054157669757534,-0.0031448165908700043,0.021308689313550486,False
+Tuned equal ensemble,Baseline equal ensemble,0.010743044815771374,-0.0009424349493759823,0.022726171871753405,False
+Tuned equal ensemble,Tuned xgboost,0.006810112359521114,-0.006086312613115369,0.020195677734239706,False

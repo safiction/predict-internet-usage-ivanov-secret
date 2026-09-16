@@ -11,9 +11,8 @@ RANDOM_STATE = 42
 
 
 def get_project_root() -> Path:
-    """Resolve the repo root whether the cwd is the root or ``notebooks/``."""
-    root = Path.cwd()
-    return root.parent if root.name == "notebooks" else root
+    """Resolve paths from the source location, not the caller's working directory."""
+    return Path(__file__).resolve().parents[1]
 
 
 # Locate data in a flat ``data/``:

@@ -8,7 +8,7 @@ from sklearn.model_selection import StratifiedKFold
 from src.config import N_SPLITS, RANDOM_STATE
 
 
-def create_cv_splits(X, y, ids):
+def create_cv_splits(X, y, ids, n_splits=N_SPLITS, random_state=RANDOM_STATE):
     """Create reproducible stratified splits independent of row order"""
     if not (len(X) == len(y) == len(ids)):
         raise ValueError("X, y, and ids must contain the same number of rows")
@@ -18,9 +18,9 @@ def create_cv_splits(X, y, ids):
         raise ValueError("IDs must be unique")
 
     cv = StratifiedKFold(
-        n_splits=N_SPLITS,
+        n_splits=n_splits,
         shuffle=True,  # Randomize row order before assigning folds
-        random_state=RANDOM_STATE,  # Reproduce the same shuffled folds
+        random_state=random_state,  # Reproduce the same shuffled folds
     )
 
     # Sort unique IDs so row reordering cannot change fold membership
@@ -45,6 +45,7 @@ def quadratic_weighted_kappa(y_true, y_pred):
     return cohen_kappa_score(
         y_true,
         y_pred,
+        labels=[0, 1, 2, 3],  # Preserve sii distances even if a class is absent
         weights="quadratic",  # Give larger penalties to more distant errors
     )
 
