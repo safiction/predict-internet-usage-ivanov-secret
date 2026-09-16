@@ -8,7 +8,7 @@ Pipeline order (see ``build_features``):
 2. domain-range validity - physiologically impossible values -> NaN
 3. BMI cross-consistency - flag (and null gross) stated-vs-recomputed BMI
 4. merge age-gated PAQ    - PAQ_C / PAQ_A -> one score + flags
-5. instrument indicators  - one "assessment not administered" flag per block
+5. instrument indicators  - one "all measurement results missing" flag per block
 6. drop leakage           - PCIAT-* columns encode the target
 """
 
@@ -17,7 +17,7 @@ from __future__ import annotations
 import pandas as pd
 from src.config import DATA_DICT_PATH, ID_COLUMN, LEAKAGE_PREFIX
 
-# Assessment blocks for which "the whole assessment is missing" is
+# Assessment blocks for which "all measurement results are missing" is
 # informative. Demographics and Internet Use are excluded.
 INDICATOR_INSTRUMENTS = [
     "CGAS",
@@ -28,8 +28,8 @@ INDICATOR_INSTRUMENTS = [
     "SDS",
 ]
 
-# Fixed clinical/plausibility bounds [low, high] (inclusive). Values outside are
-# physiologically impossible for the cohort (children/adolescents) and are set  to NaN and imputer handles them.
+# Fixed heuristic plausibility bounds [low, high] (inclusive), not clinically
+# validated diagnostic rules. Values outside are set to NaN for model fitting.
 DOMAIN_BOUNDS: dict[str, tuple[float, float]] = {
     "Basic_Demos-Age": (1, 100),
     "Physical-BMI": (5, 100),
@@ -201,18 +201,21 @@ def _merge_physical_activity_questionnaires(df: pd.DataFrame) -> pd.DataFrame:
 
 # 5. Instrument-level missingness indicators
 def _instrument_columns(df: pd.DataFrame, instrument: str) -> list[str]:
-    """Return columns belonging to one assessment block (``<instrument>-...``)."""
-    return [c for c in df.columns if c.startswith(f"{instrument}-")]
+    """Return measurement results; season metadata is not a measurement."""
+    return [
+        c for c in df.columns
+        if c.startswith(f"{instrument}-") and not c.endswith("-Season")
+    ]
 
 
 def _add_instrument_missing_indicators(df: pd.DataFrame) -> pd.DataFrame:
-    """Add 0/1 flag per block, set when the whole block is missing"""
+    """Flag absence of all results, without inferring assessment administration."""
     indicators = {}
     for instrument in INDICATOR_INSTRUMENTS:
         columns = _instrument_columns(df, instrument)
         if not columns:
             continue
-        indicators[f"{instrument}_not_administered"] = (
+        indicators[f"{instrument}_measurements_missing"] = (
             df[columns].isna().all(axis=1).astype("int8")
         )
     if not indicators:
@@ -250,13 +253,18 @@ def feature_type_map(data_dict: pd.DataFrame) -> dict[str, str]:
             mapping[field] = "continuous"
     return mapping
 
-"""Add indicators of missing values before imputation and extra features."""
+
 def add_measurement_missing_features(
     df: pd.DataFrame,
     *,
     add_flags: bool = False,
     add_counts: bool = False,
 ) -> pd.DataFrame:
+    """Add row-local measurement flags/counts before learned imputation.
+
+    Season is metadata, not an observed measurement. Existing flags from
+    build_features are overwritten with the same definition, not duplicated.
+    """
     result = df.copy()
 
     for instrument in INDICATOR_INSTRUMENTS:

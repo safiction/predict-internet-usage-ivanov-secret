@@ -1,143 +1,182 @@
-# Problematic Internet Use — ML Baseline
+# Problematic Internet Use — reproducible ordinal ensemble
 
-Baseline and evaluation pipeline for the Kaggle competition
-[Child Mind Institute — Problematic Internet Use](https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use)
+Predict `sii` (0–3) from tabular health, fitness, activity, and internet-use data
+from the [Child Mind Institute competition](https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use).
+This is prediction, not a causal estimate of internet use on physical activity.
+The model is not a clinical diagnostic or screening system.
 
-The project currently uses the tabular competition data and focuses on reproducible CPU-friendly baselines evaluated with Quadratic Weighted Kappa
+## Complete reference workflow
 
-## Reproducing the pipeline
-
-Steps 1-2 are one-time manual prerequisites
-(Kaggle data is access-controlled and cannot be redistributed); everything after is a single command.
-
-1. **Accept the competition rules** once:
-   <https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use/rules>
-2. **Add Kaggle credentials:** Kaggle → Settings → API → *Create New Token*
-   (downloads `kaggle.json`), then move it to `~/.kaggle/kaggle.json`
-   (`C:\Users\<you>\.kaggle\kaggle.json` on Windows). Alternatively set the
-   `KAGGLE_USERNAME` / `KAGGLE_KEY` environment variables.
-3. **Install dependencies:** `python -m pip install -r requirements.txt`
-4. **Download the data:** `python -m src.download_data`
-   (fetches only the tabular CSVs into `data/` and verifies row counts).
-5. **Build the processed features:** run `notebooks/06_imputation_strategy.ipynb`
-   to produce `data/processed/*.parquet` (the modeling input).
-6. **Run the baseline:** run `notebooks/baseline.ipynb`.
-
-Details for each step are in the sections below.
-
-## Repository structure
-
-```text
-notebooks/01_data_overview.ipynb      Initial data audit
-notebooks/02_missing_values.ipynb     Structure of missingness (per feature/participant/instrument)
-notebooks/03_target_analysis.ipynb    Target analysis
-notebooks/04_tabular_feature_eda.ipynb Feature EDA
-notebooks/05_instrument_analysis.ipynb Instrument-level analysis
-notebooks/06_imputation_strategy.ipynb Data-processing handoff (Layer A + imputation reference)
-notebooks/baseline.ipynb              Data audit and baseline experiments
-src/config.py                         Shared project settings
-src/evaluation.py                     Shared CV and QWK utilities
-src/features.py                       Layer A: deterministic feature engineering
-src/imputation.py                     Layer B: fold-safe imputation components
-data/processed/                       Layer A output for modeling
-results/baseline_cv_results.csv       Saved fold-level baseline results
-results/imputation_cv_results.csv     Reference CV for preprocessing choices
-```
-
-Raw competition files belong under `data/` and are excluded from Git
-
-## Data processing (imputation) stage
-
-Missingness is **not neutral** (see `notebooks/02_missing_values.ipynb`):
-the target `sii` is derived from `PCIAT-PCIAT_Total` and rows with a missing
-target are systematically less complete; some blocks are **structurally** absent
-by age (the child `PAQ_C` vs adolescent `PAQ_A` questionnaires, the treadmill);
-and missingness is **block-structured** (a whole assessment is present or absent
-together):
-
-- **Layer A `src/features.py` (`build_features`).** Deterministic, row-local
-  transforms that never read statistics from other rows. It validates the
-  data and engineers features:
-    - codebook check: values outside the data dictionary's allowed set → NaN;
-    - domain-range check: physiologically impossible values -> NaN (`Weight`/`BMI`/`BP` = 0 entries and the `CGAS` = 999 sentinel);
-    - BMI cross-consistency: compares `Physical-BMI` against BMI
-      recomputed from height/weight, flags (`bmi_inconsistent`) and nulls gross
-      mismatches;
-    - drop the `PCIAT-*` leakage columns, merge the age-gated `PAQ_C`/`PAQ_A`
-      into `PAQ_total` (+ `PAQ_version`, `PAQ_missing`, `PAQ_season`), and
-      add `<instrument>_not_administered` flag per assessment block.
-
-  The validation steps use fixed references (the dictionary, clinical bounds,
-  the BMI formula). The output contains NaN in some gaps by design.
-  `results/feature_types.csv` records the dictionary-driven type of every field
-  (identifier / leakage / categorical / continuous) as a contract for modeling.
-- **Layer B `src/imputation.py` (`make_preprocessor`).** Learned imputation
-  (median, or iterative for the linked BIA/Physical blocks) plus scaling and
-  one-hot encoding, delivered as a scikit-learn `ColumnTransformer`. It is fit
-  **inside each CV fold** and never materialized.
-
-**One rule:** call `make_preprocessor(...)` only inside a `Pipeline`/CV; never
-fit it on the full dataset and never save its output. For the final test
-prediction, fit on all of train and apply to test exactly once. Fitting
-imputation on the whole dataset leaks validation/test information into training
-and gives optimistic, non-reproducible CV.
-
-**Scope decision: actigraphy not used.** We use only the tabular CSVs.
-The accelerometer time series (`series_*.parquet`) are a separate modality with
-heavy missingness, absent for many participants, and cannot be used to fill
-tabular gaps; they are out of scope for this stage.
-
-**Reference CV** (`results/imputation_cv_results.csv`, on the shared stratified
-folds): Ridge with Layer A + median imputation matches the raw baseline mean QWK
-(0.369) while halving fold-to-fold variance (std ~0.026 vs ~0.039). Neither
-iterative block imputation nor percentile winsorization beats plain median on
-the linear model, so median is the default and both stay as options in
-`make_preprocessor`. An untuned NaN-native `HistGradientBoosting` overfits
-(train QWK ~1.0) and is left as a direction to tune.
-
-## Setup
-
-Create and activate a virtual environment:
+Reference platform: **CPython 3.13.5, Linux x86_64**. The reference run uses a new
+isolated environment; `requirements.lock.txt` pins direct and transitive packages.
+Other platforms/Python versions are not claimed to reproduce identical numbers.
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python3.13 -m venv .venv
+.venv/bin/python -m pip install -r requirements.lock.txt
+.venv/bin/python -m pip check
+.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m src.download_data
+.venv/bin/python -m src.experiment
+.venv/bin/python -m src.verify
+.venv/bin/python -m src.report
+.venv/bin/python -m src.package
 ```
 
-The current environment was tested with Python 3.14.4. Compatibility with optional boosting libraries will be checked before adding them
+Before downloading, accept the [competition rules](https://www.kaggle.com/competitions/child-mind-institute-problematic-internet-use/rules)
+and provide **your own** Kaggle credentials in `~/.kaggle/kaggle.json`, or set
+`KAGGLE_USERNAME` and `KAGGLE_KEY`. Never put credentials in the repository or
+submission. If the four CSVs are already available, skip the download command.
+The access-controlled raw files, participant-level predictions, and trained
+model bundle remain under Git-ignored paths.
 
-## Data location
+The experiment prepares features directly from raw CSVs, regenerates the
+processed parquet handoff, and runs **two repeats × five outer × three inner
+folds**. CPU/BLAS pools are limited to four threads. Runtime depends on hardware;
+allow time for hundreds of small fits. All settings are visible in
+`src/experiment.py`; lower-budget custom runs must not be presented as the
+reference experiment.
 
-The CSV files live directly under `data/`:
+## What is evaluated and exported
+
+The primary model is a trained **equal-weight CatBoost + XGBoost + ExtraTrees +
+Ridge ensemble**, followed by three QWK-calibrated class cut points.
+
+For each outer training partition:
+
+1. Test three generic candidate configurations per member on three inner folds.
+2. Choose member hyperparameters by inner-OOF RMSE.
+3. Learn QWK thresholds on inner OOF only.
+4. Refit selected members on outer training and predict the untouched outer fold.
+
+Boosting uses a separate 85/15 training-only stopping holdout, then fresh
+full-partition refits at the selected tree count. Imputation, clipping,
+one-hot vocabularies, and scaling are always learned on the corresponding
+training partition. **No best Optuna parameters from notebooks 07/08 are reused.**
+
+The deployed model repeats exactly this training/calibration algorithm on all
+labeled rows and keeps weights `[0.25, 0.25, 0.25, 0.25]`. A secondary weighted
+ensemble is evaluated separately; it never silently replaces the primary export.
+The saved bundle is reloaded and its predictions checked against the submission.
+
+Results use whole-OOF QWK per repeat. Confidence intervals resample paired
+participants with the same indices across CV repeats; repeated predictions are
+not treated as independent people. These are conditional fixed-prediction
+bootstrap diagnostics, not full retraining/post-selection intervals. Project
+design followed earlier exploration of the same dataset, so even the revised
+nested experiment is not an untouched external cohort. No statistically reliable
+improvement is claimed when the paired interval includes zero.
+
+## Features and scope
+
+`src/features.py` provides row-local Layer A preparation:
+
+- dictionary enum validation and fixed **heuristic**, not clinically validated, bounds;
+- imperial-unit BMI consistency checks;
+- removal of every `PCIAT-*` leakage feature;
+- merged child/adolescent PAQ scores and missingness/version information;
+- `<instrument>_measurements_missing` flags, excluding season metadata.
+
+Flags describe missing **results**, not whether an assessment was administered.
+Learned Layer B preprocessing lives in `src/imputation.py`; **median is the
+actual function default**. Ridge tuning can add fold-learned 1%/99% clipping.
+The XGBoost member also receives five row-local experimental interactions; a
+fully absent fitness composite stays NaN. Actigraphy is outside this tabular
+experiment. Unlabeled participants are excluded from supervised evaluation;
+their nonrandom missingness limits population generalization.
+
+## Repository map
 
 ```text
-data/train.csv
-data/test.csv
-data/data_dictionary.csv
-data/sample_submission.csv
-data/processed/            # generated by notebooks/06 (Layer A output)
+notebooks/01–05                   Raw data, target, missingness, and instrument EDA
+notebooks/06_imputation_strategy.ipynb  Processed-feature handoff and preprocessing exploration
+notebooks/baseline.ipynb          Historical classifier/linear baselines
+notebooks/07_adaboost.ipynb       Historical AdaBoost exploration
+notebooks/09_catboost.ipynb       Historical CatBoost exploration (renamed upstream)
+notebooks/08_xgboost.ipynb        Historical XGBoost exploration
+notebooks/07_adaboost_tuning.ipynb  Exploratory AdaBoost encoding/imputation/Optuna comparison
+notebooks/08_xgboost_tuning.ipynb   Exploratory XGBoost stopping-holdout calibration and tuning
+notebooks/09_catboost_updated.ipynb  Exploratory inner-OOF CatBoost calibration
+notebooks/10_catboost_depth.ipynb    Exploratory CatBoost depth comparison
+notebooks/11_catboost_bootstrap.ipynb  Exploratory CatBoost bootstrap comparison
+notebooks/09_ensemble.ipynb      Current fully nested workflow and result inspection
+src/experiment.py               Authoritative training/evaluation/deployment algorithm
+src/features.py                 Deterministic preparation
+src/imputation.py               Fold-learned preprocessing
+src/evaluation.py               ID-stable configurable splits and fixed-scale QWK
+src/ensemble.py                 Coordinate threshold optimization and blending
+src/verify.py                   Independent artifact/provenance/fold/score checks
+src/inference.py                Predictions from a trusted locally trained bundle
+src/report.py                   Data-driven anonymous project.pdf generation
+src/package.py                  Allowlisted anonymous project.zip export
+tests/                          Metric, preprocessing, fold isolation, deployment, export checks
+docs/project.md                 Seven-section report template and source attribution
+project.pdf                     Generated technical report
+results/nested_*                 Current aggregate metrics and provenance
+dist/project.zip                Anonymous source + report archive for manual submission
 ```
 
-To fetch them, run once per machine:
+Earlier CSVs without the `nested_` prefix are historical exploratory artifacts,
+not current validation scores. Their preprocessing, environment, and calibration
+protocols may differ; do not compare them as a single experiment table. Cached
+outputs/runtime metadata have been removed from historical notebooks for anonymity.
+
+The integrated tuning notebooks select Optuna configurations, preprocessing,
+depth/bootstrap variants or blend weights using this same dataset. Their
+fold-local calibration does not independently validate all model selection.
+Some historical tables also mix mean-fold and pooled-OOF QWK. Notebook 06's
+historical Ridge reference changed with missingness flags; no old fixed number
+is a universal current baseline. Only the `nested_` comparison is used in the
+generated final report. The incoming CatBoost participant-level CSVs/model files
+remain historical Git artifacts; the anonymous allowlist excludes those entire
+result directories as well as locally generated private predictions/models.
+
+## Outputs and inspection
+
+`results/nested_cv_results.csv` contains repeat-mean OOF QWK and conditional
+95% intervals. `nested_paired_deltas.csv` distinguishes observed changes from
+uncertain gains. Fold/repeat tables, class precision/recall/F1/true positives,
+inner candidate RMSE, and the complete audit are saved separately.
+`nested_metadata.json` records grids, choices, seeds, raw-data/source/result
+SHA256 digests, and actual runtime versions. Severe-class limitations are
+reported in the generated PDF rather than hidden by aggregate QWK.
+
+Participant-level `nested_oof_predictions.csv`, `submission_nested.csv`, and
+`data/models/equal_ensemble.joblib` are local artifacts. The example test file
+is not the hidden Kaggle evaluation set.
+
+To inspect notebook 09, choose this environment's Python kernel. It either runs
+training or loads results after checking identical data/code/environment/config
+and aggregate artifact digests. Set `FORCE_RETRAIN = True` to retrain.
+For an optional local Jupyter kernel:
 
 ```bash
-python -m src.download_data
+.venv/bin/python -m ipykernel install --user --name pml-repro --display-name "Python (PML reproducible)"
 ```
 
-This requires Kaggle credentials (`~/.kaggle/kaggle.json` or the
-`KAGGLE_USERNAME` / `KAGGLE_KEY` environment variables) and accepting the
-competition rules on Kaggle once.
+Command-line training does not require Jupyter or manual notebook execution.
 
-Paths are defined once in `src/config.py` (`TRAIN_PATH`, `TEST_PATH`,
-`DATA_DICT_PATH`, `DATA_DIR`, `PROCESSED_DIR`, `RESULTS_DIR`); notebooks and
-scripts import them.
+For inference after training:
 
-The baseline excludes `id`, the target `sii`, and all `PCIAT-*` columns from model features because the PCIAT score directly determines the target
+```bash
+.venv/bin/python -m src.inference --input data/test.csv --output results/predictions.csv
+```
 
-## Running the baseline
+Only load trusted locally trained joblib bundles; pickle deserialization is not
+safe for untrusted files.
 
-Open `notebooks/baseline.ipynb`, select the `.venv` kernel, and run all cells in order
+## Anonymous submission and attribution
 
-All models use the same five stratified folds with shuffling and random state 42. Fold assignment is made stable by participant ID
+`python -m src.report` creates all seven required report sections from verified
+current results and regenerates plots. `python -m src.package` creates
+`dist/project.zip` using an explicit allowlist, sanitized notebook copies, and
+a checked `MANIFEST.json`. It excludes raw data, credentials, participant-level
+records, models, environments, local paths, and Git history. It never rewrites or
+deletes local Git history. Perform a final human inspection before **manually**
+uploading to Moodle; automated checks and this code do not guarantee a grade.
+
+Library algorithms are attributed in `docs/project.md` and `project.pdf`.
+The ensemble architecture, integration, tests, and drafting used AI assistance;
+all numbers come from executed, independently checked artifacts. No clinical
+validity, causal effect, external-test score, or novel boosting algorithm is
+claimed.

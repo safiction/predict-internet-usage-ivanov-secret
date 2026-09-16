@@ -1,0 +1,7 @@
+setup,protocol,oof_qwk
+optimized blend,full OOF calibration; optimistic,0.4781626447897146
+xgboost_extra,full OOF calibration; optimistic,0.4749064094374864
+equal blend,full OOF calibration; optimistic,0.4727393490185333
+extra_trees,full OOF calibration; optimistic,0.46765043095890046
+catboost,full OOF calibration; optimistic,0.46480959984687886
+ridge,full OOF calibration; optimistic,0.4485937584459302

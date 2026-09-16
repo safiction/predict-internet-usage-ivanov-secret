@@ -78,7 +78,7 @@ def _numeric_pipeline(imputer, scale: bool, winsorize: float | None) -> Pipeline
 
 def make_preprocessor(
     feature_frame: pd.DataFrame,
-    strategy: str = "iterative",
+    strategy: str = "median",
     scale: bool = True,
     winsorize: float | None = None,
     nominal_columns: list[str] | None = None,

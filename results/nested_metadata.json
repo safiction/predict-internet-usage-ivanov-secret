@@ -1,0 +1,1270 @@
+{
+  "protocol": "Outer-held-out evaluation of inner hyperparameter selection, early stopping, and calibration",
+  "primary_policy": "Tuned equal ensemble",
+  "historical_best_params_reused": false,
+  "design_caveat": "The algorithm was redesigned after exploratory analysis of this dataset; these are resampling estimates, not a new untouched external cohort.",
+  "config": {
+    "outer_seeds": [
+      42,
+      2026
+    ],
+    "outer_splits": 5,
+    "inner_splits": 3,
+    "threads": 4,
+    "bootstrap_samples": 2000,
+    "stopping_rounds": 60,
+    "weight_resolution": 4
+  },
+  "candidate_grids": {
+    "catboost": [
+      {
+        "iterations": 600,
+        "depth": 6,
+        "learning_rate": 0.03,
+        "l2_leaf_reg": 3.0
+      },
+      {
+        "iterations": 900,
+        "depth": 4,
+        "learning_rate": 0.03,
+        "l2_leaf_reg": 10.0,
+        "bagging_temperature": 1.0
+      },
+      {
+        "iterations": 1200,
+        "depth": 5,
+        "learning_rate": 0.02,
+        "l2_leaf_reg": 20.0,
+        "bagging_temperature": 1.0
+      }
+    ],
+    "xgboost": [
+      {
+        "n_estimators": 1200,
+        "max_depth": 6,
+        "learning_rate": 0.03,
+        "min_child_weight": 1,
+        "reg_lambda": 1.0
+      },
+      {
+        "n_estimators": 1200,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 5,
+        "reg_lambda": 10.0,
+        "subsample": 0.85,
+        "colsample_bytree": 0.8,
+        "reg_alpha": 0.1
+      },
+      {
+        "n_estimators": 1600,
+        "max_depth": 4,
+        "learning_rate": 0.02,
+        "min_child_weight": 10,
+        "reg_lambda": 20.0,
+        "subsample": 0.8,
+        "colsample_bytree": 0.7,
+        "reg_alpha": 1.0,
+        "gamma": 0.1
+      }
+    ],
+    "extra_trees": [
+      {
+        "n_estimators": 250,
+        "max_depth": null,
+        "min_samples_leaf": 4,
+        "max_features": 1.0
+      },
+      {
+        "n_estimators": 250,
+        "max_depth": 12,
+        "min_samples_leaf": 8,
+        "max_features": 0.8
+      },
+      {
+        "n_estimators": 250,
+        "max_depth": 8,
+        "min_samples_leaf": 12,
+        "max_features": 0.8
+      }
+    ],
+    "ridge": [
+      {
+        "alpha": 1.0
+      },
+      {
+        "alpha": 10.0,
+        "winsorize": 0.01
+      },
+      {
+        "alpha": 100.0,
+        "winsorize": 0.01
+      }
+    ]
+  },
+  "feature_columns": [
+    "Basic_Demos-Enroll_Season",
+    "Basic_Demos-Age",
+    "Basic_Demos-Sex",
+    "CGAS-Season",
+    "CGAS-CGAS_Score",
+    "Physical-Season",
+    "Physical-BMI",
+    "Physical-Height",
+    "Physical-Weight",
+    "Physical-Waist_Circumference",
+    "Physical-Diastolic_BP",
+    "Physical-HeartRate",
+    "Physical-Systolic_BP",
+    "Fitness_Endurance-Season",
+    "Fitness_Endurance-Max_Stage",
+    "Fitness_Endurance-Time_Mins",
+    "Fitness_Endurance-Time_Sec",
+    "FGC-Season",
+    "FGC-FGC_CU",
+    "FGC-FGC_CU_Zone",
+    "FGC-FGC_GSND",
+    "FGC-FGC_GSND_Zone",
+    "FGC-FGC_GSD",
+    "FGC-FGC_GSD_Zone",
+    "FGC-FGC_PU",
+    "FGC-FGC_PU_Zone",
+    "FGC-FGC_SRL",
+    "FGC-FGC_SRL_Zone",
+    "FGC-FGC_SRR",
+    "FGC-FGC_SRR_Zone",
+    "FGC-FGC_TL",
+    "FGC-FGC_TL_Zone",
+    "BIA-Season",
+    "BIA-BIA_Activity_Level_num",
+    "BIA-BIA_BMC",
+    "BIA-BIA_BMI",
+    "BIA-BIA_BMR",
+    "BIA-BIA_DEE",
+    "BIA-BIA_ECW",
+    "BIA-BIA_FFM",
+    "BIA-BIA_FFMI",
+    "BIA-BIA_FMI",
+    "BIA-BIA_Fat",
+    "BIA-BIA_Frame_num",
+    "BIA-BIA_ICW",
+    "BIA-BIA_LDM",
+    "BIA-BIA_LST",
+    "BIA-BIA_SMM",
+    "BIA-BIA_TBW",
+    "SDS-Season",
+    "SDS-SDS_Total_Raw",
+    "SDS-SDS_Total_T",
+    "PreInt_EduHx-Season",
+    "PreInt_EduHx-computerinternet_hoursday",
+    "bmi_inconsistent",
+    "PAQ_total",
+    "PAQ_missing",
+    "PAQ_version",
+    "PAQ_season",
+    "CGAS_measurements_missing",
+    "Physical_measurements_missing",
+    "Fitness_Endurance_measurements_missing",
+    "FGC_measurements_missing",
+    "BIA_measurements_missing",
+    "SDS_measurements_missing"
+  ],
+  "data": {
+    "data_sha256": {
+      "train.csv": "f3d32a58301631ba3897668fc167bcc6233b005e41c35c46a75586976d0737d7",
+      "test.csv": "8a537d5ec400e8a629bf118c580a58a22e34740e3837f8ab25ea81ea528b910d",
+      "data_dictionary.csv": "b02dc663e565a6241f598b53d02692a685198852bd4b152f61a1f4a5231867a4",
+      "sample_submission.csv": "f7cc56f61eda388bb0d9aa8e71dccdf27289c8856dd45cfaa284edfedb4ab3d2"
+    },
+    "raw_train_rows": 3960,
+    "labeled_rows": 2736,
+    "unlabeled_rows": 1224,
+    "test_rows": 20,
+    "class_counts": {
+      "0": 1594,
+      "1": 730,
+      "2": 378,
+      "3": 34
+    },
+    "cleaning": {
+      "codebook": {},
+      "domain": {
+        "Physical-BMI": 7,
+        "Physical-Weight": 61,
+        "Physical-Diastolic_BP": 3,
+        "Physical-Systolic_BP": 1,
+        "CGAS-CGAS_Score": 1
+      },
+      "bmi": {
+        "flagged": 0,
+        "nulled": 0
+      }
+    }
+  },
+  "versions": {
+    "python": "3.13.5",
+    "numpy": "2.1.3",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.6.1",
+    "scipy": "1.15.3",
+    "catboost": "1.2.10",
+    "xgboost": "3.4.1",
+    "optuna": "5.0.0",
+    "pyarrow": "24.0.0",
+    "joblib": "1.6.0",
+    "threadpoolctl": "3.7.0"
+  },
+  "source_sha256": {
+    "experiment.py": "0db0b57077fca8a70ea0c45260c64c913d251dd9c458dceaf4bb4a7dcfbe028e",
+    "features.py": "01c111e6a7bd4698949bd8c6a8a1d8dd9613b3d3ddd92c2825a72b70ad6bf60e",
+    "imputation.py": "fd0774ffdde75e24836cc77339124670921b9452421464451f02050300440d08",
+    "ensemble.py": "9aeddf13ae8dd06f95445e08f425ef2460b2978117afa2c6e50044d92d904e91",
+    "evaluation.py": "c72e07a7138ed2d105ebf4016bb2d2086590eb87c3beefe0322648c8719d4775",
+    "config.py": "72301003f372c3605f8a6edc24c250ac1b4d64b423e4b603048347a08d7576e4"
+  },
+  "artifact_sha256": {
+    "nested_cv_results.csv": "2137373a21b115cf72f6d927f29ab99df3a1bc39a7bc4edc890eb26712f6d551",
+    "nested_fold_results.csv": "91541ffd99b2ab63f35f36fea2313d9fe7436c75cae83b18eaada17bdf8755c7",
+    "nested_paired_deltas.csv": "25ce2d6f0a77fee2c9aa8b107581fdb0bba92a332c27050c36af01a730099289",
+    "nested_repeat_results.csv": "8a5cb20b8a431d1e6f61362f4dc5befb2e70842b3f87e97c2212868813dcc48e",
+    "nested_class_metrics.csv": "e4a39e177b06b5c50d3c0ffac7ad994c3db78e017d55d5c534e865d1c3b7faec",
+    "nested_tuning_results.csv": "ec9ecbe73f9f00a332809ad9309b978f44a863cb786dced1b526a310d36430c5"
+  },
+  "uncertainty": "95% percentile participant-paired bootstrap; same sampled IDs in every repeat; fixed OOF predictions, no retraining or post-selection adjustment",
+  "fold_audit": [
+    {
+      "seed": 42,
+      "fold": 1,
+      "training_rows": 2188,
+      "validation_rows": 548,
+      "selections": {
+        "catboost": {
+          "candidate": 2,
+          "params": {
+            "iterations": 1200,
+            "depth": 5,
+            "learning_rate": 0.02,
+            "l2_leaf_reg": 20.0,
+            "bagging_temperature": 1.0
+          },
+          "inner_rmse": 0.6756277874620005
+        },
+        "xgboost": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 1600,
+            "max_depth": 4,
+            "learning_rate": 0.02,
+            "min_child_weight": 10,
+            "reg_lambda": 20.0,
+            "subsample": 0.8,
+            "colsample_bytree": 0.7,
+            "reg_alpha": 1.0,
+            "gamma": 0.1
+          },
+          "inner_rmse": 0.674196273936889
+        },
+        "extra_trees": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 8,
+            "min_samples_leaf": 12,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6777566329905641
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6822388809176678
+        }
+      },
+      "tree_counts": {
+        "catboost": 864,
+        "xgboost": 253,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.5161552699070303,
+          0.9420545124302748,
+          1.3642627797193547
+        ],
+        "xgboost": [
+          0.549412339925766,
+          0.9429297745227814,
+          1.426345407962799
+        ],
+        "extra_trees": [
+          0.5372440389209497,
+          0.9461771197199167,
+          1.4097714727010322
+        ],
+        "ridge": [
+          0.5560622402856997,
+          0.9231488211941576,
+          1.5386378170669235
+        ]
+      },
+      "equal_thresholds": [
+        0.5551934056594559,
+        0.9067732136436941,
+        1.448475752324602
+      ],
+      "selected_single": "xgboost",
+      "weighted_weights": [
+        0.75,
+        0.25,
+        0.0,
+        0.0
+      ],
+      "weighted_thresholds": [
+        0.5538061148105005,
+        0.911965796764146,
+        1.404655249280173
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 2,
+      "training_rows": 2189,
+      "validation_rows": 547,
+      "selections": {
+        "catboost": {
+          "candidate": 2,
+          "params": {
+            "iterations": 1200,
+            "depth": 5,
+            "learning_rate": 0.02,
+            "l2_leaf_reg": 20.0,
+            "bagging_temperature": 1.0
+          },
+          "inner_rmse": 0.6832049012060893
+        },
+        "xgboost": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 1600,
+            "max_depth": 4,
+            "learning_rate": 0.02,
+            "min_child_weight": 10,
+            "reg_lambda": 20.0,
+            "subsample": 0.8,
+            "colsample_bytree": 0.7,
+            "reg_alpha": 1.0,
+            "gamma": 0.1
+          },
+          "inner_rmse": 0.6799843682818091
+        },
+        "extra_trees": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 8,
+            "min_samples_leaf": 12,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6873592963240507
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6914467152658542
+        }
+      },
+      "tree_counts": {
+        "catboost": 352,
+        "xgboost": 218,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.5341675263949126,
+          0.9440008402038377,
+          1.5401387062649823
+        ],
+        "xgboost": [
+          0.6030275523662567,
+          0.8543769121170044,
+          1.4545734524726868
+        ],
+        "extra_trees": [
+          0.5268444134569638,
+          0.9614800602473271,
+          1.5170097650343157
+        ],
+        "ridge": [
+          0.6580545364131978,
+          1.079456191278358,
+          1.5669604478533947
+        ]
+      },
+      "equal_thresholds": [
+        0.5234699978830606,
+        0.9394060532597881,
+        1.3603796213864425
+      ],
+      "selected_single": "catboost",
+      "weighted_weights": [
+        0.25,
+        0.25,
+        0.5,
+        0.0
+      ],
+      "weighted_thresholds": [
+        0.5406509236510014,
+        0.9515619331175567,
+        1.5610704183087205
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 3,
+      "training_rows": 2189,
+      "validation_rows": 547,
+      "selections": {
+        "catboost": {
+          "candidate": 0,
+          "params": {
+            "iterations": 600,
+            "depth": 6,
+            "learning_rate": 0.03,
+            "l2_leaf_reg": 3.0
+          },
+          "inner_rmse": 0.6788747855902607
+        },
+        "xgboost": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 1600,
+            "max_depth": 4,
+            "learning_rate": 0.02,
+            "min_child_weight": 10,
+            "reg_lambda": 20.0,
+            "subsample": 0.8,
+            "colsample_bytree": 0.7,
+            "reg_alpha": 1.0,
+            "gamma": 0.1
+          },
+          "inner_rmse": 0.6768758742075534
+        },
+        "extra_trees": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 8,
+            "min_samples_leaf": 12,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6786405721173894
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6833748834604136
+        }
+      },
+      "tree_counts": {
+        "catboost": 164,
+        "xgboost": 187,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.5912904851416986,
+          0.9758851473203884,
+          1.4672362456918253
+        ],
+        "xgboost": [
+          0.600728839635849,
+          0.9706449806690216,
+          1.5549858212471008
+        ],
+        "extra_trees": [
+          0.5828841512741681,
+          0.8620916393269578,
+          1.4676174605894798
+        ],
+        "ridge": [
+          0.5879864150418579,
+          0.9081706144289086,
+          1.5386699756456663
+        ]
+      },
+      "equal_thresholds": [
+        0.5347917888818787,
+        0.9324461287795035,
+        1.36132690690389
+      ],
+      "selected_single": "extra_trees",
+      "weighted_weights": [
+        0.0,
+        0.0,
+        0.5,
+        0.5
+      ],
+      "weighted_thresholds": [
+        0.5598850986944995,
+        0.9710791746109879,
+        1.4351037089054377
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 4,
+      "training_rows": 2189,
+      "validation_rows": 547,
+      "selections": {
+        "catboost": {
+          "candidate": 2,
+          "params": {
+            "iterations": 1200,
+            "depth": 5,
+            "learning_rate": 0.02,
+            "l2_leaf_reg": 20.0,
+            "bagging_temperature": 1.0
+          },
+          "inner_rmse": 0.6749087023874739
+        },
+        "xgboost": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 1600,
+            "max_depth": 4,
+            "learning_rate": 0.02,
+            "min_child_weight": 10,
+            "reg_lambda": 20.0,
+            "subsample": 0.8,
+            "colsample_bytree": 0.7,
+            "reg_alpha": 1.0,
+            "gamma": 0.1
+          },
+          "inner_rmse": 0.6718530469889973
+        },
+        "extra_trees": {
+          "candidate": 1,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 12,
+            "min_samples_leaf": 8,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6767861289802333
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6772449455290355
+        }
+      },
+      "tree_counts": {
+        "catboost": 369,
+        "xgboost": 279,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.5588559680070477,
+          0.8796331010726776,
+          1.490296498433827
+        ],
+        "xgboost": [
+          0.44255222380161285,
+          0.9389435648918152,
+          1.6724518537521362
+        ],
+        "extra_trees": [
+          0.5502238957522076,
+          0.9911219003219006,
+          1.5812445150353365
+        ],
+        "ridge": [
+          0.5971227447203724,
+          0.8603860953514245,
+          1.4507439288317183
+        ]
+      },
+      "equal_thresholds": [
+        0.5117804704560714,
+        0.9417501163734423,
+        1.457200481352009
+      ],
+      "selected_single": "xgboost",
+      "weighted_weights": [
+        0.25,
+        0.5,
+        0.25,
+        0.0
+      ],
+      "weighted_thresholds": [
+        0.5117040510825763,
+        0.9087255047045588,
+        1.474858267942178
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 5,
+      "training_rows": 2189,
+      "validation_rows": 547,
+      "selections": {
+        "catboost": {
+          "candidate": 1,
+          "params": {
+            "iterations": 900,
+            "depth": 4,
+            "learning_rate": 0.03,
+            "l2_leaf_reg": 10.0,
+            "bagging_temperature": 1.0
+          },
+          "inner_rmse": 0.6751929661267518
+        },
+        "xgboost": {
+          "candidate": 1,
+          "params": {
+            "n_estimators": 1200,
+            "max_depth": 3,
+            "learning_rate": 0.03,
+            "min_child_weight": 5,
+            "reg_lambda": 10.0,
+            "subsample": 0.85,
+            "colsample_bytree": 0.8,
+            "reg_alpha": 0.1
+          },
+          "inner_rmse": 0.670306068113269
+        },
+        "extra_trees": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 8,
+            "min_samples_leaf": 12,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6769697968261869
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6790343107640517
+        }
+      },
+      "tree_counts": {
+        "catboost": 188,
+        "xgboost": 112,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.537150315991912,
+          0.9047516930146121,
+          1.726468872556513
+        ],
+        "xgboost": [
+          0.5378172695636749,
+          0.875096321105957,
+          1.5298562049865723
+        ],
+        "extra_trees": [
+          0.5749634301590939,
+          0.9541605641855821,
+          1.6438406084998427
+        ],
+        "ridge": [
+          0.626427341645764,
+          0.9127901800943982,
+          1.4135482122243124
+        ]
+      },
+      "equal_thresholds": [
+        0.595098140556918,
+        0.8836011884316306,
+        1.5854353714898504
+      ],
+      "selected_single": "xgboost",
+      "weighted_weights": [
+        0.0,
+        0.5,
+        0.0,
+        0.5
+      ],
+      "weighted_thresholds": [
+        0.5735185702919006,
+        0.9312515652356508,
+        1.4770916836115031
+      ]
+    },
+    {
+      "seed": 2026,
+      "fold": 1,
+      "training_rows": 2188,
+      "validation_rows": 548,
+      "selections": {
+        "catboost": {
+          "candidate": 1,
+          "params": {
+            "iterations": 900,
+            "depth": 4,
+            "learning_rate": 0.03,
+            "l2_leaf_reg": 10.0,
+            "bagging_temperature": 1.0
+          },
+          "inner_rmse": 0.672933438415298
+        },
+        "xgboost": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 1600,
+            "max_depth": 4,
+            "learning_rate": 0.02,
+            "min_child_weight": 10,
+            "reg_lambda": 20.0,
+            "subsample": 0.8,
+            "colsample_bytree": 0.7,
+            "reg_alpha": 1.0,
+            "gamma": 0.1
+          },
+          "inner_rmse": 0.6721124679009918
+        },
+        "extra_trees": {
+          "candidate": 1,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 12,
+            "min_samples_leaf": 8,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6755396469741973
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6796885461944023
+        }
+      },
+      "tree_counts": {
+        "catboost": 407,
+        "xgboost": 242,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.5084862379199158,
+          0.905896822606004,
+          1.4244768625187165
+        ],
+        "xgboost": [
+          0.540529191493988,
+          0.9656812846660614,
+          1.5520004034042358
+        ],
+        "extra_trees": [
+          0.5572232055226414,
+          0.9658143657289793,
+          1.5587543092563103
+        ],
+        "ridge": [
+          0.5220523918341435,
+          0.9458702972182318,
+          1.4007896691466577
+        ]
+      },
+      "equal_thresholds": [
+        0.5246792898342534,
+        0.9345485337286428,
+        1.4548685276615152
+      ],
+      "selected_single": "xgboost",
+      "weighted_weights": [
+        0.5,
+        0.0,
+        0.25,
+        0.25
+      ],
+      "weighted_thresholds": [
+        0.49858015147109286,
+        0.9012753522645209,
+        1.4425424954666257
+      ]
+    },
+    {
+      "seed": 2026,
+      "fold": 2,
+      "training_rows": 2189,
+      "validation_rows": 547,
+      "selections": {
+        "catboost": {
+          "candidate": 0,
+          "params": {
+            "iterations": 600,
+            "depth": 6,
+            "learning_rate": 0.03,
+            "l2_leaf_reg": 3.0
+          },
+          "inner_rmse": 0.6816534103720955
+        },
+        "xgboost": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 1600,
+            "max_depth": 4,
+            "learning_rate": 0.02,
+            "min_child_weight": 10,
+            "reg_lambda": 20.0,
+            "subsample": 0.8,
+            "colsample_bytree": 0.7,
+            "reg_alpha": 1.0,
+            "gamma": 0.1
+          },
+          "inner_rmse": 0.6788167995103195
+        },
+        "extra_trees": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 8,
+            "min_samples_leaf": 12,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6837903220662899
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6850770643735756
+        }
+      },
+      "tree_counts": {
+        "catboost": 246,
+        "xgboost": 274,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.5028854271674512,
+          0.9547373238612606,
+          1.4945935741726386
+        ],
+        "xgboost": [
+          0.5898377001285553,
+          0.9768758714199066,
+          1.414917528629303
+        ],
+        "extra_trees": [
+          0.5643768415002095,
+          0.9226402880118736,
+          1.519787373414947
+        ],
+        "ridge": [
+          0.570588469316637,
+          0.8807585479901403,
+          1.446707567326409
+        ]
+      },
+      "equal_thresholds": [
+        0.515298183938309,
+        0.9607802374797128,
+        1.423018797730824
+      ],
+      "selected_single": "xgboost",
+      "weighted_weights": [
+        0.5,
+        0.0,
+        0.25,
+        0.25
+      ],
+      "weighted_thresholds": [
+        0.5256906673017204,
+        0.905987117542375,
+        1.4356425148051577
+      ]
+    },
+    {
+      "seed": 2026,
+      "fold": 3,
+      "training_rows": 2189,
+      "validation_rows": 547,
+      "selections": {
+        "catboost": {
+          "candidate": 1,
+          "params": {
+            "iterations": 900,
+            "depth": 4,
+            "learning_rate": 0.03,
+            "l2_leaf_reg": 10.0,
+            "bagging_temperature": 1.0
+          },
+          "inner_rmse": 0.6756380007878424
+        },
+        "xgboost": {
+          "candidate": 1,
+          "params": {
+            "n_estimators": 1200,
+            "max_depth": 3,
+            "learning_rate": 0.03,
+            "min_child_weight": 5,
+            "reg_lambda": 10.0,
+            "subsample": 0.85,
+            "colsample_bytree": 0.8,
+            "reg_alpha": 0.1
+          },
+          "inner_rmse": 0.6755308367839757
+        },
+        "extra_trees": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 8,
+            "min_samples_leaf": 12,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6738811086236228
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6789269738514444
+        }
+      },
+      "tree_counts": {
+        "catboost": 140,
+        "xgboost": 128,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.5573532058278811,
+          0.9294961768365048,
+          1.5402928440047896
+        ],
+        "xgboost": [
+          0.5240543186664581,
+          0.8868064284324646,
+          1.5241852402687073
+        ],
+        "extra_trees": [
+          0.5703846807207863,
+          0.957978054476937,
+          1.3103479621977854
+        ],
+        "ridge": [
+          0.5772542955655818,
+          1.05087310372451,
+          1.5163065217253242
+        ]
+      },
+      "equal_thresholds": [
+        0.6254170977046306,
+        0.9472332740942118,
+        1.4095927023585189
+      ],
+      "selected_single": "extra_trees",
+      "weighted_weights": [
+        0.25,
+        0.25,
+        0.5,
+        0.0
+      ],
+      "weighted_thresholds": [
+        0.5820268648626917,
+        0.9234279303747621,
+        1.3444126108948589
+      ]
+    },
+    {
+      "seed": 2026,
+      "fold": 4,
+      "training_rows": 2189,
+      "validation_rows": 547,
+      "selections": {
+        "catboost": {
+          "candidate": 1,
+          "params": {
+            "iterations": 900,
+            "depth": 4,
+            "learning_rate": 0.03,
+            "l2_leaf_reg": 10.0,
+            "bagging_temperature": 1.0
+          },
+          "inner_rmse": 0.6767463231960857
+        },
+        "xgboost": {
+          "candidate": 1,
+          "params": {
+            "n_estimators": 1200,
+            "max_depth": 3,
+            "learning_rate": 0.03,
+            "min_child_weight": 5,
+            "reg_lambda": 10.0,
+            "subsample": 0.85,
+            "colsample_bytree": 0.8,
+            "reg_alpha": 0.1
+          },
+          "inner_rmse": 0.6759026715117982
+        },
+        "extra_trees": {
+          "candidate": 1,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 12,
+            "min_samples_leaf": 8,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6727593340804254
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6811860159772268
+        }
+      },
+      "tree_counts": {
+        "catboost": 450,
+        "xgboost": 240,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.5145634429704152,
+          0.9928598109946298,
+          1.3519604222959631
+        ],
+        "xgboost": [
+          0.5735786259174347,
+          0.9666876792907715,
+          1.4932047724723816
+        ],
+        "extra_trees": [
+          0.5451048850931205,
+          1.0249887517948904,
+          1.5593620985395753
+        ],
+        "ridge": [
+          0.572463677047812,
+          0.883608309826348,
+          1.6116391775729715
+        ]
+      },
+      "equal_thresholds": [
+        0.5608020930176993,
+        0.9322470997655351,
+        1.3738310762406984
+      ],
+      "selected_single": "extra_trees",
+      "weighted_weights": [
+        0.5,
+        0.0,
+        0.5,
+        0.0
+      ],
+      "weighted_thresholds": [
+        0.5606159070099521,
+        0.9717377324352623,
+        1.404833680497521
+      ]
+    },
+    {
+      "seed": 2026,
+      "fold": 5,
+      "training_rows": 2189,
+      "validation_rows": 547,
+      "selections": {
+        "catboost": {
+          "candidate": 0,
+          "params": {
+            "iterations": 600,
+            "depth": 6,
+            "learning_rate": 0.03,
+            "l2_leaf_reg": 3.0
+          },
+          "inner_rmse": 0.6779056552392222
+        },
+        "xgboost": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 1600,
+            "max_depth": 4,
+            "learning_rate": 0.02,
+            "min_child_weight": 10,
+            "reg_lambda": 20.0,
+            "subsample": 0.8,
+            "colsample_bytree": 0.7,
+            "reg_alpha": 1.0,
+            "gamma": 0.1
+          },
+          "inner_rmse": 0.6769320169105462
+        },
+        "extra_trees": {
+          "candidate": 2,
+          "params": {
+            "n_estimators": 250,
+            "max_depth": 8,
+            "min_samples_leaf": 12,
+            "max_features": 0.8
+          },
+          "inner_rmse": 0.6802511472040998
+        },
+        "ridge": {
+          "candidate": 2,
+          "params": {
+            "alpha": 100.0,
+            "winsorize": 0.01
+          },
+          "inner_rmse": 0.6819401326601344
+        }
+      },
+      "tree_counts": {
+        "catboost": 209,
+        "xgboost": 215,
+        "extra_trees": null,
+        "ridge": null
+      },
+      "member_thresholds": {
+        "catboost": [
+          0.567767033768235,
+          0.9396992752868687,
+          1.605262428461014
+        ],
+        "xgboost": [
+          0.7134652435779572,
+          0.9818839728832245,
+          1.277142584323883
+        ],
+        "extra_trees": [
+          0.60295127460035,
+          0.9175342366339687,
+          1.5707735045344893
+        ],
+        "ridge": [
+          0.6330657024040247,
+          0.8583308587201443,
+          1.523905609652866
+        ]
+      },
+      "equal_thresholds": [
+        0.62616111134846,
+        0.9087384368580946,
+        1.4620247368869226
+      ],
+      "selected_single": "catboost",
+      "weighted_weights": [
+        0.75,
+        0.0,
+        0.0,
+        0.25
+      ],
+      "weighted_thresholds": [
+        0.5865091253321704,
+        0.9661988678218907,
+        1.5804464600564252
+      ]
+    }
+  ],
+  "deployment": {
+    "policy": "Tuned equal ensemble",
+    "seed": 42,
+    "selection": {
+      "catboost": {
+        "candidate": 2,
+        "params": {
+          "iterations": 1200,
+          "depth": 5,
+          "learning_rate": 0.02,
+          "l2_leaf_reg": 20.0,
+          "bagging_temperature": 1.0
+        },
+        "inner_rmse": 0.6732007463090673
+      },
+      "xgboost": {
+        "candidate": 2,
+        "params": {
+          "n_estimators": 1600,
+          "max_depth": 4,
+          "learning_rate": 0.02,
+          "min_child_weight": 10,
+          "reg_lambda": 20.0,
+          "subsample": 0.8,
+          "colsample_bytree": 0.7,
+          "reg_alpha": 1.0,
+          "gamma": 0.1
+        },
+        "inner_rmse": 0.6682884838432773
+      },
+      "extra_trees": {
+        "candidate": 2,
+        "params": {
+          "n_estimators": 250,
+          "max_depth": 8,
+          "min_samples_leaf": 12,
+          "max_features": 0.8
+        },
+        "inner_rmse": 0.6719988524674998
+      },
+      "ridge": {
+        "candidate": 2,
+        "params": {
+          "alpha": 100.0,
+          "winsorize": 0.01
+        },
+        "inner_rmse": 0.6783739195200623
+      }
+    },
+    "tree_counts": {
+      "catboost": 248,
+      "xgboost": 145,
+      "extra_trees": null,
+      "ridge": null
+    },
+    "weights": [
+      0.25,
+      0.25,
+      0.25,
+      0.25
+    ],
+    "thresholds": [
+      0.5329648629538987,
+      0.9126303357199944,
+      1.360815972239709
+    ],
+    "calibration_source": "inner OOF on all labeled train, following the exact outer-fold training algorithm",
+    "prediction_rows": 20,
+    "serialization_round_trip_verified": true
+  }
+}
