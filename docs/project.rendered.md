@@ -44,7 +44,7 @@ member using inner-OOF QWK, never the outer-fold score. This avoids choosing
 the best reference retrospectively on validation labels.
 
 All current comparisons use the same participants, feature preparation, outer
-folds, and QWK definition. Historical notebook 07/08/early-09 winning scores are
+folds, and QWK definition. Historical AdaBoost/XGBoost and early CatBoost/ensemble winning scores are
 exploratory and are not used to choose current numerical hyperparameters or
 assert a current improvement. The earlier global tuning and calibration
 protocol differs from the current nested procedure.
