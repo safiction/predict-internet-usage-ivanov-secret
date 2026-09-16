@@ -92,8 +92,13 @@ notebooks/01–05                   Raw data, target, missingness, and instrumen
 notebooks/06_imputation_strategy.ipynb  Processed-feature handoff and preprocessing exploration
 notebooks/baseline.ipynb          Historical classifier/linear baselines
 notebooks/07_adaboost.ipynb       Historical AdaBoost exploration
-notebooks/07_catboost.ipynb       Historical CatBoost exploration
+notebooks/09_catboost.ipynb       Historical CatBoost exploration (renamed upstream)
 notebooks/08_xgboost.ipynb        Historical XGBoost exploration
+notebooks/07_adaboost_tuning.ipynb  Exploratory AdaBoost encoding/imputation/Optuna comparison
+notebooks/08_xgboost_tuning.ipynb   Exploratory XGBoost stopping-holdout calibration and tuning
+notebooks/09_catboost_updated.ipynb  Exploratory inner-OOF CatBoost calibration
+notebooks/10_catboost_depth.ipynb    Exploratory CatBoost depth comparison
+notebooks/11_catboost_bootstrap.ipynb  Exploratory CatBoost bootstrap comparison
 notebooks/09_ensemble.ipynb      Current fully nested workflow and result inspection
 src/experiment.py               Authoritative training/evaluation/deployment algorithm
 src/features.py                 Deterministic preparation
@@ -115,6 +120,16 @@ Earlier CSVs without the `nested_` prefix are historical exploratory artifacts,
 not current validation scores. Their preprocessing, environment, and calibration
 protocols may differ; do not compare them as a single experiment table. Cached
 outputs/runtime metadata have been removed from historical notebooks for anonymity.
+
+The integrated tuning notebooks select Optuna configurations, preprocessing,
+depth/bootstrap variants or blend weights using this same dataset. Their
+fold-local calibration does not independently validate all model selection.
+Some historical tables also mix mean-fold and pooled-OOF QWK. Notebook 06's
+historical Ridge reference changed with missingness flags; no old fixed number
+is a universal current baseline. Only the `nested_` comparison is used in the
+generated final report. The incoming CatBoost participant-level CSVs/model files
+remain historical Git artifacts; the anonymous allowlist excludes those entire
+result directories as well as locally generated private predictions/models.
 
 ## Outputs and inspection
 

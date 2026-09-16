@@ -1,0 +1,4 @@
+setup,mean_val_qwk,val_std_qwk
+AdaBoostRegressor | Optuna-tuned (median imputation),0.4159,0.063
+"AdaBoostRegressor | baseline (depth=1, 50 estimators, rate=1.0, median imputation)",0.174,0.1397
+"AdaBoostRegressor | best Task 2 imputation (median), untuned",0.174,0.1397

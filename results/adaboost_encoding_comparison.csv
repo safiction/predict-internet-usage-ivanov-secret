@@ -1,0 +1,4 @@
+variant,mean_val_qwk,val_std_qwk
+AdaBoostClassifier (argmax),0.3124,0.0475
+AdaBoostRegressor (optimized thresholds),0.174,0.1397
+"AdaBoostClassifier (proba -> score, optimized thresholds)",0.1229,0.0843

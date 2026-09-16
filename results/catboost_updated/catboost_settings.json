@@ -1,0 +1,176 @@
+{
+  "model": "CatBoostRegressor",
+  "params_source": "Historical parameters from 07_catboost.ipynb",
+  "params": {
+    "learning_rate": 0.010188851583434083,
+    "depth": 7,
+    "l2_leaf_reg": 16.361624028536067,
+    "bagging_temperature": 2.482872677273449,
+    "random_strength": 1.4065544206797491
+  },
+  "random_state": 42,
+  "outer_splits": 5,
+  "inner_splits": 3,
+  "max_iterations": 3000,
+  "early_stopping_rounds": 100,
+  "stopping_fraction": 0.15,
+  "thread_count": 4,
+  "feature_columns": [
+    "Basic_Demos-Enroll_Season",
+    "Basic_Demos-Age",
+    "Basic_Demos-Sex",
+    "CGAS-Season",
+    "CGAS-CGAS_Score",
+    "Physical-Season",
+    "Physical-BMI",
+    "Physical-Height",
+    "Physical-Weight",
+    "Physical-Waist_Circumference",
+    "Physical-Diastolic_BP",
+    "Physical-HeartRate",
+    "Physical-Systolic_BP",
+    "Fitness_Endurance-Season",
+    "Fitness_Endurance-Max_Stage",
+    "Fitness_Endurance-Time_Mins",
+    "Fitness_Endurance-Time_Sec",
+    "FGC-Season",
+    "FGC-FGC_CU",
+    "FGC-FGC_CU_Zone",
+    "FGC-FGC_GSND",
+    "FGC-FGC_GSND_Zone",
+    "FGC-FGC_GSD",
+    "FGC-FGC_GSD_Zone",
+    "FGC-FGC_PU",
+    "FGC-FGC_PU_Zone",
+    "FGC-FGC_SRL",
+    "FGC-FGC_SRL_Zone",
+    "FGC-FGC_SRR",
+    "FGC-FGC_SRR_Zone",
+    "FGC-FGC_TL",
+    "FGC-FGC_TL_Zone",
+    "BIA-Season",
+    "BIA-BIA_Activity_Level_num",
+    "BIA-BIA_BMC",
+    "BIA-BIA_BMI",
+    "BIA-BIA_BMR",
+    "BIA-BIA_DEE",
+    "BIA-BIA_ECW",
+    "BIA-BIA_FFM",
+    "BIA-BIA_FFMI",
+    "BIA-BIA_FMI",
+    "BIA-BIA_Fat",
+    "BIA-BIA_Frame_num",
+    "BIA-BIA_ICW",
+    "BIA-BIA_LDM",
+    "BIA-BIA_LST",
+    "BIA-BIA_SMM",
+    "BIA-BIA_TBW",
+    "SDS-Season",
+    "SDS-SDS_Total_Raw",
+    "SDS-SDS_Total_T",
+    "PreInt_EduHx-Season",
+    "PreInt_EduHx-computerinternet_hoursday",
+    "bmi_inconsistent",
+    "PAQ_total",
+    "PAQ_missing",
+    "PAQ_version",
+    "PAQ_season",
+    "CGAS_not_administered",
+    "Physical_not_administered",
+    "Fitness_Endurance_not_administered",
+    "FGC_not_administered",
+    "BIA_not_administered",
+    "SDS_not_administered"
+  ],
+  "categorical_columns": [
+    "Basic_Demos-Enroll_Season",
+    "CGAS-Season",
+    "Physical-Season",
+    "Fitness_Endurance-Season",
+    "FGC-Season",
+    "BIA-Season",
+    "SDS-Season",
+    "PreInt_EduHx-Season",
+    "PAQ_version",
+    "PAQ_season"
+  ],
+  "categorical_missing_value": "missing",
+  "test_prediction": "Mean continuous prediction of outer-fold models",
+  "folds": [
+    {
+      "fold": 1,
+      "inner_seed": 51596,
+      "n_trees": 941,
+      "inner_tree_counts": [
+        1003,
+        716,
+        941
+      ],
+      "thresholds": [
+        0.5881207900325887,
+        0.924088655844433,
+        1.3435109274088255
+      ]
+    },
+    {
+      "fold": 2,
+      "inner_seed": 60772,
+      "n_trees": 924,
+      "inner_tree_counts": [
+        924,
+        854,
+        937
+      ],
+      "thresholds": [
+        0.5287035273161587,
+        0.8742136984357463,
+        1.3955360253401308
+      ]
+    },
+    {
+      "fold": 3,
+      "inner_seed": 69948,
+      "n_trees": 502,
+      "inner_tree_counts": [
+        1335,
+        502,
+        497
+      ],
+      "thresholds": [
+        0.5168023891975062,
+        0.8936119664353419,
+        1.5341156268196317
+      ]
+    },
+    {
+      "fold": 4,
+      "inner_seed": 79124,
+      "n_trees": 634,
+      "inner_tree_counts": [
+        733,
+        634,
+        448
+      ],
+      "thresholds": [
+        0.5815389928745661,
+        0.9023200992071229,
+        1.2853368958231255
+      ]
+    },
+    {
+      "fold": 5,
+      "inner_seed": 88300,
+      "n_trees": 565,
+      "inner_tree_counts": [
+        565,
+        373,
+        1639
+      ],
+      "thresholds": [
+        0.5752383052968324,
+        0.923059449205196,
+        1.6443517788787336
+      ]
+    }
+  ]
+}
