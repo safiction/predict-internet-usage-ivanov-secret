@@ -1,0 +1,6 @@
+fold,depth,bootstrap_type,subsample,boosting_type,task_type
+1,5,MVS,0.800000011920929,Plain,CPU
+2,5,MVS,0.800000011920929,Plain,CPU
+3,5,MVS,0.800000011920929,Plain,CPU
+4,5,MVS,0.800000011920929,Plain,CPU
+5,5,MVS,0.800000011920929,Plain,CPU

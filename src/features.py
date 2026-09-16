@@ -250,6 +250,37 @@ def feature_type_map(data_dict: pd.DataFrame) -> dict[str, str]:
             mapping[field] = "continuous"
     return mapping
 
+"""Add indicators of missing values before imputation and extra features."""
+def add_measurement_missing_features(
+    df: pd.DataFrame,
+    *,
+    add_flags: bool = False,
+    add_counts: bool = False,
+) -> pd.DataFrame:
+    result = df.copy()
+
+    for instrument in INDICATOR_INSTRUMENTS:
+        columns = [
+            c for c in _instrument_columns(df, instrument)
+            if c != f"{instrument}-Season"
+        ]
+        if not columns:
+            continue
+
+        observed = df[columns].notna().sum(axis=1)
+
+        if add_flags:
+            result[f"{instrument}_measurements_missing"] = (
+                observed.eq(0).astype("int8")
+            )
+
+        if add_counts:
+            result[f"{instrument}_observed_count"] = (
+                observed.astype("int16")
+            )
+
+    return result
+
 
 # Entry point
 def build_features(

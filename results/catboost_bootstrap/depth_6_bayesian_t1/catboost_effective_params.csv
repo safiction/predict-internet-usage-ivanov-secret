@@ -1,0 +1,6 @@
+fold,depth,bootstrap_type,bagging_temperature,subsample,sampling_frequency,boosting_type,task_type
+1,6,Bayesian,1,,PerTree,Plain,CPU
+2,6,Bayesian,1,,PerTree,Plain,CPU
+3,6,Bayesian,1,,PerTree,Plain,CPU
+4,6,Bayesian,1,,PerTree,Plain,CPU
+5,6,Bayesian,1,,PerTree,Plain,CPU
